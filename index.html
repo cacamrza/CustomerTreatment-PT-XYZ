@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Dashboard analisis segmentasi pelanggan PT. XYZ berbasis RFM dan K-Means.">
+  <title>PT. XYZ | Customer Intelligence</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+  <!-- Libraries loaded from CDN; internet is required for these libraries. -->
+  <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.4/dist/chart.umd.min.js"></script>
+  <script defer src="app.js"></script>
+  <script defer src="script.js"></script>
+</head>
+<body>
+  <div class="app-shell">
+    <aside class="sidebar" id="sidebar">
+      <a class="brand" href="#" aria-label="PT XYZ dashboard">
+        <span class="brand-mark"><svg viewBox="0 0 48 48" aria-hidden="true"><path d="M6 13 24 4l18 9v22L24 44 6 35V13Z" fill="none" stroke="currentColor" stroke-width="3"/><path d="M6 13l18 10 18-10M24 23v21M15 8.5l18 10" fill="none" stroke="currentColor" stroke-width="3"/><path d="M29 27h8l-5 7" fill="none" stroke="#FF8A24" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+        <span><strong>PT. XYZ</strong><small>Customer Intelligence</small></span>
+      </a>
+      <div class="sidebar-label">WORKSPACE</div>
+      <nav class="nav-menu">
+        <a class="nav-link active" href="#overview"><span class="nav-icon">▦</span> Ringkasan</a>
+        <a class="nav-link" href="#upload"><span class="nav-icon">⇧</span> Upload Data</a>
+        <a class="nav-link" href="#segments"><span class="nav-icon">◉</span> Segmentasi Pelanggan</a>
+        <a class="nav-link" href="#treatment"><span class="nav-icon">✦</span> Customer Treatment</a>
+      </nav>
+      <div class="sidebar-bottom">
+        <div class="help-card">
+          <div class="help-icon">✦</div>
+          <strong>Insight berbasis data</strong>
+          <p>Unggah transaksi untuk menemukan peluang retensi pelanggan.</p>
+          <a href="#upload">Mulai analisis <span>↗</span></a>
+        </div>
+        <div class="sidebar-foot"><span class="status-dot"></span> Mode lokal · Tanpa login</div>
+      </div>
+    </aside>
+
+    <main class="main-content">
+      <header class="topbar">
+        <button class="mobile-menu" id="mobileMenu" aria-label="Buka menu">☰</button>
+        <div class="breadcrumb">Workspace <span>/</span> <strong>Ringkasan</strong></div>
+        <div class="topbar-right"><span class="secure-label"><span>●</span> Pemrosesan di browser</span><div class="avatar">XYZ</div></div>
+      </header>
+
+      <section class="page-section" id="overview">
+        <div class="page-heading">
+          <div>
+            <div class="eyebrow"><span class="eyebrow-line"></span> CUSTOMER RELATIONSHIP MANAGEMENT</div>
+            <h1>Customer Intelligence <span class="heading-dot">.</span></h1>
+            <p class="page-subtitle">Ubah data transaksi menjadi strategi pelanggan yang lebih tepat sasaran.</p>
+          </div>
+          <a class="button button-primary" href="#upload"><span>＋</span> Upload data transaksi</a>
+        </div>
+
+        <div class="welcome-banner">
+          <div class="banner-content">
+            <span class="banner-kicker">SELAMAT DATANG DI DASHBOARD PT. XYZ</span>
+            <h2>Kenali pelanggan.<br><em>Bangun loyalitas.</em></h2>
+            <p>Analisis perilaku transaksi dengan RFM dan K-Means untuk membantu menyusun customer treatment berdasarkan karakteristik pelanggan.</p>
+            <a class="button button-light" href="#upload">Mulai analisis <span>→</span></a>
+          </div>
+          <div class="banner-art" aria-hidden="true">
+            <div class="art-orbit orbit-one"></div><div class="art-orbit orbit-two"></div>
+            <div class="art-box"><span class="box-top"></span><span class="box-front"></span><span class="box-side"></span><span class="box-tape"></span></div>
+            <div class="art-route route-a"></div><div class="art-route route-b"></div>
+            <span class="art-pin pin-one">●</span><span class="art-pin pin-two">●</span>
+            <div class="art-stat"><span class="art-stat-icon">↗</span><span><b>RFM</b><small>Customer insights</small></span></div>
+          </div>
+        </div>
+
+        <div class="section-title-row">
+          <div><h2>Ringkasan analisis</h2><p>Ikhtisar akan muncul setelah data berhasil diproses.</p></div>
+          <span class="period-pill" id="periodPill">Belum ada data</span>
+        </div>
+        <div class="metric-grid">
+          <article class="metric-card"><div class="metric-top"><span>Total pelanggan</span><span class="metric-icon blue">♙</span></div><div class="metric-value" id="totalCustomers">—</div><div class="metric-note" id="customersNote">Menunggu data transaksi</div></article>
+          <article class="metric-card"><div class="metric-top"><span>Total transaksi</span><span class="metric-icon orange">⇄</span></div><div class="metric-value" id="totalTransactions">—</div><div class="metric-note">Invoice valid yang dianalisis</div></article>
+          <article class="metric-card"><div class="metric-top"><span>Total shipping cost</span><span class="metric-icon green">↗</span></div><div class="metric-value" id="totalRevenue">—</div><div class="metric-note">Akumulasi nilai shipping cost</div></article>
+          <article class="metric-card"><div class="metric-top"><span>Jumlah segmen</span><span class="metric-icon purple">◉</span></div><div class="metric-value" id="totalClusters">—</div><div class="metric-note" id="silhouetteNote">Belum ada evaluasi cluster</div></article>
+        </div>
+      </section>
+
+      <section class="page-section upload-section" id="upload">
+        <div class="section-title-row">
+          <div><div class="eyebrow"><span class="eyebrow-line"></span> DATA INPUT</div><h2>Mulai dari data transaksi</h2><p>Unggah file Excel tahunan untuk menghitung RFM dan membentuk segmen pelanggan.</p></div>
+        </div>
+        <div class="upload-layout">
+          <div class="upload-card">
+            <div class="upload-dropzone" id="dropzone" tabindex="0" role="button" aria-label="Pilih file Excel untuk diunggah">
+              <div class="upload-symbol"><span>↑</span></div>
+              <h3>Letakkan file Excel di sini</h3>
+              <p>atau <label for="fileInput" class="browse-link">pilih file dari perangkat</label></p>
+              <span class="file-types">FORMAT .XLSX / .XLS / .CSV · MAKS SESUAI MEMORI BROWSER</span>
+              <input type="file" id="fileInput" accept=".xlsx,.xls,.csv" hidden>
+            </div>
+            <div class="file-preview hidden" id="filePreview">
+              <div class="file-badge">XLS</div><div class="file-details"><strong id="fileName">data.xlsx</strong><span id="fileMeta">Siap dianalisis</span></div><button class="icon-button" id="removeFile" aria-label="Hapus file">×</button>
+            </div>
+            <div class="upload-options">
+              <div class="field-group"><label for="dateReference">Tanggal analisis (snapshot date)</label><input type="date" id="dateReference"></div>
+              <div class="field-group"><label for="clusterCount">Jumlah cluster K</label><select id="clusterCount"><option value="3" selected>3 cluster</option><option value="2">2 cluster</option><option value="4">4 cluster</option><option value="5">5 cluster</option><option value="6">6 cluster</option></select></div>
+            </div>
+            <button class="button button-primary button-full" id="analyzeButton" disabled><span>✦</span> Analisis data pelanggan</button>
+            <div class="privacy-note"><span>ⓘ</span> File diproses di browser pada perangkat ini. Data tidak dikirim ke server oleh aplikasi demo ini.</div>
+            <div class="progress-wrap hidden" id="progressWrap"><div class="progress-label"><span id="progressText">Memproses data...</span><span id="progressPercent">0%</span></div><div class="progress-track"><div class="progress-bar" id="progressBar"></div></div></div>
+            <div class="alert hidden" id="alertBox" role="alert"></div>
+          </div>
+          <aside class="requirements-card">
+            <div class="requirements-icon">☷</div><h3>Struktur data yang dibutuhkan</h3><p>Pastikan file memiliki kolom yang mewakili informasi berikut. Nama kolom boleh berbeda; pilih pemetaan setelah upload jika dibutuhkan.</p>
+            <div class="required-field"><span class="field-symbol">Aa</span><span><strong>Identitas shipper / pelanggan</strong><small>Nama atau ID pelanggan</small></span><span class="required-tag">Wajib</span></div>
+            <div class="required-field"><span class="field-symbol">#</span><span><strong>Nomor invoice</strong><small>Identitas transaksi</small></span><span class="required-tag">Wajib</span></div>
+            <div class="required-field"><span class="field-symbol">▦</span><span><strong>Tanggal invoice</strong><small>Tanggal transaksi</small></span><span class="required-tag">Wajib</span></div>
+            <div class="required-field"><span class="field-symbol">Rp</span><span><strong>Shipping cost</strong><small>Nilai transaksi dalam rupiah</small></span><span class="required-tag">Wajib</span></div>
+            <a class="template-link" href="#" id="downloadTemplate">↓ Unduh template CSV</a>
+          </aside>
+        </div>
+        <div class="mapping-card hidden" id="mappingCard">
+          <div class="mapping-heading"><div><h3>Konfirmasi kolom data</h3><p>Pilih kolom dari file yang sesuai dengan setiap variabel.</p></div><span class="step-number">02</span></div>
+          <div class="mapping-grid">
+            <div class="field-group"><label for="colCustomer">Pelanggan / shipper</label><select id="colCustomer"></select></div>
+            <div class="field-group"><label for="colInvoice">Nomor invoice</label><select id="colInvoice"></select></div>
+            <div class="field-group"><label for="colDate">Tanggal invoice</label><select id="colDate"></select></div>
+            <div class="field-group"><label for="colCost">Shipping cost</label><select id="colCost"></select></div>
+          </div>
+          <div class="mapping-footer"><span id="rowCountLabel">0 baris terdeteksi</span><button class="button button-primary" id="confirmMapping">Konfirmasi kolom <span>→</span></button></div>
+        </div>
+      </section>
+
+      <section class="page-section results-section hidden" id="results">
+        <div class="section-title-row">
+          <div><div class="eyebrow"><span class="eyebrow-line"></span> ANALYTICS</div><h2>Hasil segmentasi pelanggan</h2><p>Ringkasan perilaku pelanggan berdasarkan Recency, Frequency, dan Monetary.</p></div>
+          <button class="button button-outline" id="exportButton">↓ Ekspor hasil CSV</button>
+        </div>
+        <div class="chart-grid">
+          <article class="panel chart-panel"><div class="panel-heading"><div><h3>Distribusi pelanggan</h3><p>Jumlah pelanggan pada setiap cluster</p></div><span class="panel-menu">•••</span></div><div class="chart-wrap"><canvas id="clusterChart" aria-label="Grafik distribusi cluster"></canvas></div><div id="clusterLegend" class="cluster-legend"></div></article>
+          <article class="panel chart-panel"><div class="panel-heading"><div><h3>Profil rata-rata RFM</h3><p>Perbandingan nilai rata-rata antarcluster</p></div><span class="panel-menu">•••</span></div><div class="chart-wrap"><canvas id="rfmChart" aria-label="Grafik profil RFM"></canvas></div><div class="chart-footnote">Recency lebih rendah umumnya menunjukkan aktivitas yang lebih baru.</div></article>
+        </div>
+        <article class="panel table-panel" id="segments">
+          <div class="panel-heading"><div><h3>Karakteristik segmen</h3><p>Ringkasan metrik untuk membantu interpretasi cluster.</p></div><div class="table-search"><input type="search" id="customerSearch" placeholder="Cari pelanggan..." aria-label="Cari pelanggan"></div></div>
+          <div class="table-scroll"><table><thead><tr><th>Segmen</th><th>Pelanggan</th><th>Rata-rata R</th><th>Rata-rata F</th><th>Rata-rata M</th><th>Karakteristik</th></tr></thead><tbody id="segmentTableBody"><tr><td colspan="6" class="empty-table">Belum ada hasil analisis.</td></tr></tbody></table></div>
+        </article>
+        <article class="panel table-panel customer-table-panel">
+          <div class="panel-heading"><div><h3>Daftar pelanggan</h3><p>Hasil RFM setiap pelanggan beserta label segmennya.</p></div><span class="table-count" id="customerCount">0 pelanggan</span></div>
+          <div class="table-scroll"><table><thead><tr><th>Pelanggan</th><th>Recency (hari)</th><th>Frequency</th><th>Monetary</th><th>Segmen</th></tr></thead><tbody id="customerTableBody"><tr><td colspan="5" class="empty-table">Unggah data untuk melihat pelanggan.</td></tr></tbody></table></div>
+          <div class="table-pagination"><span id="pageInfo">Menampilkan 0 pelanggan</span><div><button class="page-btn" id="prevPage" disabled>←</button><button class="page-btn" id="nextPage" disabled>→</button></div></div>
+        </article>
+      </section>
+
+      <section class="page-section treatment-section hidden" id="treatment">
+        <div class="section-title-row"><div><div class="eyebrow"><span class="eyebrow-line"></span> RECOMMENDATION ENGINE</div><h2>Customer treatment plan</h2><p>Ide tindakan untuk membangun loyalitas berdasarkan pola transaksi tiap segmen.</p></div></div>
+        <div class="treatment-grid" id="treatmentGrid"><div class="empty-state"><span>✦</span><h3>Rekomendasi akan muncul di sini</h3><p>Unggah dan analisis data transaksi untuk membuat rekomendasi berdasarkan segmen.</p></div></div>
+        <div class="recommendation-note"><span>ⓘ</span><p>Rekomendasi merupakan saran awal berbasis pola RFM, bukan jaminan hasil bisnis. Sesuaikan dengan kebijakan perusahaan, kapasitas layanan, dan konteks hubungan pelanggan.</p></div>
+      </section>
+
+      <footer class="footer"><span>© <span id="yearNow"></span> PT. XYZ · Customer Intelligence Dashboard</span><span>RFM <i>•</i> K-Means <i>•</i> Customer Treatment</span></footer>
+    </main>
+  </div>
+  <div class="toast" id="toast" role="status"></div>
+</body>
+</html>
